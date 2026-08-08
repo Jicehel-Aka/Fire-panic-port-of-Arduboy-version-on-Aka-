@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "id": "firepanic",
+  "title": "Fire Panic",
+  "version": "0.1.0",
+  "platform": "Arduboy",
+  "port_level": "raw",
+  "author": "Press Play On Tape",
+  "porter": "AKA Port Studio",
+  "license": "BSD 3-Clause",
+  "copyright": "Press Play On Tape",
+  "source_repository": "https://github.com/Press-Play-On-Tape/FirePanic",
+  "description": "Aide les pompiers a sauver les victimes d'un immeuble en feu et a les emmener a l'hopital en ambulance. Portage du jeu Arduboy original de Press Play On Tape.",
+  "supports_save": true,
+  "supports_screenshot": true,
+  "supports_languages": true,
+  "save_directory": "/sdcard/firepanic/"
+}
