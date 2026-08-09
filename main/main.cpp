@@ -51,18 +51,23 @@ extern "C" void app_main(void) {
 
     game.setup();
 
-    // Logo/attribution du jeu affiche en permanence sous la zone de jeu
-    // (marge inutilisee de l'ecran AKA) -- element deja present dans le jeu
-    // (ecran splash), simplement rendu ici de facon permanente plutot que
-    // temporaire. Dessine une seule fois : rien d'autre ne touche cette
-    // zone de l'ecran, donc pas besoin de le rafraichir.
-    Arduboy2Base::drawStaticBitmapDirect(62, 142, Images::PPOT, 3);
+    // Logo/attribution du jeu affiche en permanence sous la zone de jeu --
+    // BUG TROUVE ET CORRIGE (repere sur Kong, meme architecture) : dessine
+    // une seule fois, il pouvait apparaitre partiellement efface a l'usage.
+    // Redessine periodiquement plutot qu'une seule fois, cout negligeable.
+    uint32_t logoFrameCounter = 0;
 
     while (true) {
         input_poll(g_keys);
         if (!akaRuntime.update(g_keys)) { vTaskDelay(pdMS_TO_TICKS(16)); continue; }
         ArduboyTonesExt::poll();
         game.loop();
+
+        if (logoFrameCounter % 20 == 0) {
+            Arduboy2Base::drawStaticBitmapDirect(62, 142, Images::PPOT, 3);
+        }
+        ++logoFrameCounter;
+
         vTaskDelay(pdMS_TO_TICKS(1));
     }
 }

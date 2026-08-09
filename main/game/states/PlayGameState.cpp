@@ -1,4 +1,5 @@
 #include "PlayGameState.h"
+#include <cstdio>
 
 #include "../utils/Arduboy2Ext.h"
 #include "../utils/Physics.h"

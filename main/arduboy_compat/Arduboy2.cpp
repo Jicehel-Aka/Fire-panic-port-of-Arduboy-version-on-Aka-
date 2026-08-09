@@ -99,14 +99,25 @@ void Arduboy2Base::display(bool doClear) {
     ensure_decode_buf();
     if (!s_decodeBuf) return;
     uint16_t white = gfx.makeColor(255,255,255), black = gfx.makeColor(0,0,0);
-    for (int y = 0; y < HEIGHT; ++y) {
-        int page = y >> 3, bit = y & 7;
+    // OPTIMISATION : boucle restructuree pour lire chaque octet du tampon
+    // UNE SEULE FOIS (au lieu de jusqu'a 8 fois -- une par ligne de pixel --
+    // dans la version precedente, qui reindexait sBuffer[page*WIDTH+x] pour
+    // CHAQUE y individuellement alors qu'un octet contient deja les 8
+    // lignes verticales d'une page). Boucle par page (8 lignes a la fois)
+    // plutot que par ligne individuelle -- ~8x moins de lectures memoire.
+    for (int page = 0; page < HEIGHT / 8; ++page) {
+        const uint8_t* rowPtr = &sBuffer[page * WIDTH];
+        int py0 = (page * 8) * PHYS_SCALE;
         for (int x = 0; x < WIDTH; ++x) {
-            uint8_t b = sBuffer[page * WIDTH + x];
-            uint16_t c = (b & (1 << bit)) ? white : black;
-            int px = x*PHYS_SCALE, py = y*PHYS_SCALE;
-            s_decodeBuf[py*256+px] = c; s_decodeBuf[py*256+px+1] = c;
-            s_decodeBuf[(py+1)*256+px] = c; s_decodeBuf[(py+1)*256+px+1] = c;
+            uint8_t b = rowPtr[x];
+            int px = x * PHYS_SCALE;
+            for (int bit = 0; bit < 8; ++bit) {
+                uint16_t c = (b & (1 << bit)) ? white : black;
+                int py = py0 + bit * PHYS_SCALE;
+                uint16_t* dst0 = &s_decodeBuf[py * 256 + px];
+                dst0[0] = c; dst0[1] = c;
+                dst0[256] = c; dst0[257] = c;
+            }
         }
     }
     gfx.drawImage(PHYS_X, PHYS_Y, s_decodeBuf, 256, 128);

@@ -3,6 +3,7 @@
 #include "../utils/EEPROM_Utils.h"
 #include "../utils/Enums.h"
 #include "../sounds/Sounds.h"
+#include <cstdio>
 
 
 // ----------------------------------------------------------------------------

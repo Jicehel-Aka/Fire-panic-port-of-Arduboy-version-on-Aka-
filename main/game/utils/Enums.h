@@ -96,7 +96,13 @@
 #define HS_SCORE_LEFT 69
 #define HS_CHAR_TOP 22
 #define HS_CHAR_V_SPACING 9
-#define HS_PRESS_A_DELAY 100
+// BUG UTILISATEUR SIGNALE (pas un bug de detection) : le delai d'origine
+// (100 frames, ~1.7s a 60fps) avant que A/B ne redevienne actif donnait
+// l'impression qu'il fallait "insister" pour que la touche soit detectee,
+// alors qu'elle etait simplement ignoree volontairement pendant ce temps.
+// Reduit a la demande de l'utilisateur -- toujours une courte pause pour
+// eviter de zapper l'ecran par accident, mais bien plus reactif.
+#define HS_PRESS_A_DELAY 45
 
 #define NO_WINNER 255
 
